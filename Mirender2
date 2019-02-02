@@ -1,0 +1,73 @@
+package Apariencia;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+
+ *
+ * @author PC-Patricio
+ */
+public class MiRender2 extends DefaultTableCellRenderer {
+    private int columna_patron;
+    
+    public MiRender2(int Colpatron){
+        this.columna_patron=Colpatron;
+    }
+    
+    
+   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+       
+    
+       
+       
+   if (value instanceof String) {
+   try {
+                
+                row = table.convertRowIndexToModel(row);
+                String s = table.getModel().getValueAt(row, columna_patron).toString();
+                
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-d");
+                Date date = (Date) formatter.parse(s);
+                Calendar cal2 = Calendar.getInstance();
+                cal2.set(Calendar.YEAR, 2019);
+                // Month. 0 is January, 11 is November
+                cal2.set(Calendar.MONTH, Calendar.JULY  );
+                cal2.set(Calendar.DAY_OF_MONTH, 31);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+ 
+                if (cal.before(cal2)) {
+                    setForeground(Color.RED);
+                } else {
+                    setForeground(null);
+                }
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                return this;
+ 
+            } catch (ParseException e) {
+                System.out.println("Exception :" + e);
+                return null;
+            }
+        } else {
+             
+            setForeground(null);
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            return this;
+        }
+  
+   
+    }
+     
+   }      
+

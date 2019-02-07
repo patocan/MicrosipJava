@@ -1,0 +1,26 @@
+select a.nombre_linea, a.clave_articulo, a.nombre_articulo, f.formula, p.precio, l.clave, l.fecha, l.existencia, a.articulo_id, s.nombre
+from lista_arts_discretos('L','E','19','01/01/2011', 'Now',0,null) L
+join orsp_lista_articulos('S','S') A
+join libres_articulos f
+join precios_articulos p
+join almacenes s
+on a.articulo_id=l.articulo_id
+on f.articulo_id=a.articulo_id
+on p.articulo_id=a.articulo_id
+on l.almacen_id=s.almacen_id
+where F.observaciones = 'REZAGADO'
+and l.existencia > 0
+union all
+select a.nombre_linea, a.clave_articulo, a.nombre_articulo, f.formula, p.precio, '','', e.existencia, a.articulo_id,''
+from  orsp_lista_articulos('S','S') A
+left join exival_art(a.articulo_id,19,'Now','S') E
+left join libres_articulos f
+left join precios_articulos p
+on e.articulo_id=a.articulo_id
+on a.articulo_id=f.articulo_id
+on a.articulo_id=p.articulo_id
+join articulos AR
+on Ar.articulo_id=a.articulo_id and ar.seguimiento='N'
+where F.descripcion = 'REZAGADO'
+and e.existencia > 0
+order by 2

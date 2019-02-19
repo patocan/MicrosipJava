@@ -1,0 +1,31 @@
+SELECT v.tipo_docto, v.folio, v.fecha, cc.clave_cliente, cl.nombre as nombre_cliente,z.nombre as Nombre_zona, cl.estatus, d.docto_ve_det_id, l.articulo_id,  v.docto_ve_id,
+  l.nombre_articulo, f.formula, i.pctje_impuesto, l.nombre_linea, d.unidades,d.pctje_dscto, pa.descuento as DesctoAsig, d.unidades as UnidVta,
+  d.notas, (d.precio_total_neto/d.unidades) as PUnitario, VE.nombre as Vendedor,dv.unidades as DUnidades, DV.art_discreto_id
+
+ FROM doctos_ve V
+join doctos_ve_det D
+on v.docto_ve_id=d.docto_ve_id  and v.tipo_docto in ('F','D') and v.fecha between :F_Fecha_Inicial and :F_Fecha_final
+   and v.estatus <> 'C'
+join clientes CL
+on cl.cliente_id=v.cliente_id
+left join claves_clientes CC
+on cc.cliente_id=cl.cliente_id
+join zonas_clientes Z
+on z.zona_cliente_id=cl.zona_cliente_id
+join orsp_lista_articulos('S','N') L
+on l.articulo_id = d.articulo_id and l.nombre_articulo not starting with 'VENTA DE'
+join libres_articulos F
+on f.articulo_id = d.articulo_id
+join impuestos_articulos IA
+on IA.articulo_id=d.articulo_id
+join impuestos I
+on i.impuesto_id=ia.impuesto_id and i.tipo_impto_id=44
+join precios_cli_tipo PT
+on pt.tipo_cliente_id=cl.tipo_cliente_id
+join politicas_dsctos_art_cli PA
+on pt.politica_dscto_art_cli_id=pa.politica_dscto_art_cli_id
+join vendedores VE
+on ve.vendedor_id=v.vendedor_id
+left join desglose_en_discretos_ve DV
+on d.docto_ve_det_id=dv.docto_ve_det_id
+order by  l.nombre_articulo
